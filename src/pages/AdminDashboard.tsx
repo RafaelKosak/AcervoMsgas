@@ -54,18 +54,18 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur">
-        <div className="container flex h-14 items-center justify-between gap-2 px-4">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="container flex h-16 items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" asChild className="shrink-0">
               <Link to="/">
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Voltar ao site</span>
               </Link>
             </Button>
-            <img src={logoMsgas} alt="MSGás" className="h-14 sm:h-16 w-auto shrink-0" />
+            <img src={logoMsgas} alt="MSGás" className="h-10 sm:h-12 w-auto shrink-0 ml-2" />
           </div>
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[120px] sm:max-w-none">{user.email}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[150px] sm:max-w-none">{user.email}</span>
             <Button variant="outline" size="sm" onClick={handleLogout} className="shrink-0">
               <LogOut className="h-4 w-4 sm:mr-2" />
               <span className="hidden sm:inline">Sair</span>

@@ -76,7 +76,7 @@ const PublicationsTable = ({
     return `<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);">
   <tr>
     <td style="background:#1e3a5f;padding:20px 28px;text-align:center;">
-      <img src="${PUBLISHED_BASE_URL}/logo-msgazeta.svg" alt="MSGás" height="36" style="display:block;margin:0 auto;height:36px;width:auto;" />
+      <img src="https://msgas.com.br/wp-content/uploads/2026/03/Ativo-3@2x.png" alt="MSGás" height="60" style="display:block;margin:0 auto;height:60px;width:auto;" />
     </td>
   </tr>
   <tr>
