@@ -147,9 +147,12 @@ const ImmersiveReader = ({ pages, coverUrl, title, isNewsletter = false, publica
   const needsGhostPage = !isNewsletter;
 
   const basePages = isNewsletter ? (pages.length > 0 ? pages : []) : (pages.length > 0 ? pages : [coverUrl]);
-  const allPages = needsGhostPage ? [TRANSPARENT_PIXEL, ...basePages] : basePages;
+  const lastPageIsAlone = needsGhostPage && basePages.length % 2 === 0;
+  const allPages = needsGhostPage
+    ? [TRANSPARENT_PIXEL, ...basePages, ...(lastPageIsAlone ? [TRANSPARENT_PIXEL] : [])]
+    : basePages;
   const totalPages = allPages.length;
-  const actualTotalPages = needsGhostPage ? totalPages - 1 : totalPages;
+  const actualTotalPages = needsGhostPage ? totalPages - 1 - (lastPageIsAlone ? 1 : 0) : totalPages;
 
   useEffect(() => {
     let cancelled = false;
@@ -326,7 +329,9 @@ const ImmersiveReader = ({ pages, coverUrl, title, isNewsletter = false, publica
               style={{
                 transform: needsGhostPage && currentPage === 0
                   ? `translateX(-${dimensions.width / 2}px)`
-                  : 'translateX(0)',
+                  : lastPageIsAlone && currentPage >= totalPages - 2
+                    ? `translateX(${dimensions.width / 2}px)`
+                    : 'translateX(0)',
                 transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                 position: "relative",
               }}
@@ -375,7 +380,7 @@ const ImmersiveReader = ({ pages, coverUrl, title, isNewsletter = false, publica
               variant="ghost"
               size="icon"
               onClick={goToNext}
-              disabled={currentPage >= totalPages - 1}
+              disabled={currentPage >= totalPages - (lastPageIsAlone ? 2 : 1)}
               className="h-10 w-10 rounded-full shrink-0 bg-background/80 backdrop-blur border border-border/50 shadow-sm hover:bg-background z-10"
             >
               <ChevronRight className="h-5 w-5" />
@@ -392,7 +397,7 @@ const ImmersiveReader = ({ pages, coverUrl, title, isNewsletter = false, publica
             Anterior
           </Button>
           <span className="text-xs text-muted-foreground whitespace-nowrap">{getPageLabel()}</span>
-          <Button variant="outline" size="sm" onClick={goToNext} disabled={currentPage >= totalPages - 1} className="flex-1">
+          <Button variant="outline" size="sm" onClick={goToNext} disabled={currentPage >= totalPages - (lastPageIsAlone ? 2 : 1)} className="flex-1">
             Próxima
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
