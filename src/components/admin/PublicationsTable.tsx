@@ -21,7 +21,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logoMsgas from "@/assets/Logo-principal.svg";
 
-const PUBLISHED_BASE_URL = "https://ms-gazeta.lovable.app";
+const PUBLISHED_BASE_URL = window.location.origin;
 
 interface PublicationsTableProps {
   publications: PublicationRow[];
