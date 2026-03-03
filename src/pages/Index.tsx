@@ -89,7 +89,7 @@ const Index = () => {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-secondary/30 to-background">
-          <div className="container pt-12 md:pt-16 pb-6 md:pb-8">
+          <div className="container pt-10 md:pt-14 pb-6 md:pb-8">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
