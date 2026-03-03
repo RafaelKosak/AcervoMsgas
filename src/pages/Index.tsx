@@ -15,13 +15,18 @@ const Index = () => {
   const publications = useMemo(() => rows.map(rowToPublication), [rows]);
 
   // Find the most recently UPLOADED publication (by created_at) for the featured spot
+  // When a type filter is active, show the newest publication of that type instead
   const featuredId = useMemo(() => {
     if (rows.length === 0) return null;
-    const newest = rows.reduce((a, b) =>
+    const candidates = filters.type
+      ? rows.filter((r) => r.type === filters.type)
+      : rows;
+    if (candidates.length === 0) return null;
+    const newest = candidates.reduce((a, b) =>
       new Date(a.created_at) > new Date(b.created_at) ? a : b
     );
     return newest.id;
-  }, [rows]);
+  }, [rows, filters.type]);
 
   const years = useMemo(() => {
     const unique = [...new Set(publications.map((p) => p.year))];
