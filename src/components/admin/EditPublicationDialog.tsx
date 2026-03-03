@@ -32,6 +32,7 @@ const EditPublicationDialog = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
   const [pages, setPages] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [addingPages, setAddingPages] = useState(false);
@@ -43,6 +44,14 @@ const EditPublicationDialog = ({
       setTitle(publication.title);
       setDescription(publication.description || "");
       setType(publication.type || "");
+
+      // format date to YYYY-MM-DD for the date input
+      if (publication.published_at) {
+        setPublishedAt(publication.published_at.substring(0, 10));
+      } else {
+        setPublishedAt("");
+      }
+
       setPages([...publication.pages]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,6 +144,8 @@ const EditPublicationDialog = ({
           title: title.trim(),
           description: description.trim() || null,
           type: type || null,
+          published_at: publishedAt || publication.published_at,
+          year: publishedAt ? new Date(publishedAt).getFullYear() : publication.year,
           pages,
           page_count: pages.length || 1,
         })
@@ -191,6 +202,16 @@ const EditPublicationDialog = ({
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Date */}
+            <div className="space-y-2">
+              <Label>Data de Publicação</Label>
+              <Input
+                type="date"
+                value={publishedAt}
+                onChange={(e) => setPublishedAt(e.target.value)}
+              />
             </div>
 
             {/* Pages management */}
