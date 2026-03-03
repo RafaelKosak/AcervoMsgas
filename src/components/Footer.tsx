@@ -3,8 +3,8 @@ import logoMsgas from "@/assets/Logo-principal.svg";
 const Footer = () => {
   return (
     <footer className="border-t border-border/50 bg-secondary/30">
-      <div className="container py-12">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+      <div className="container py-4">
+        <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
           <div className="flex items-center gap-3">
             <img
               src={logoMsgas}
