@@ -182,15 +182,33 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
       setAvatarUploading(false);
     }
   };
+  // Hide header on scroll down, show on scroll up
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setHeaderVisible(y < lastScrollY.current || y < 10);
+      lastScrollY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="container flex h-16 items-center justify-between gap-4">
+    <header
+      className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+      style={{
+        transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
+        transition: "transform 0.3s ease",
+      }}
+    >      <div className="container flex h-20 items-center justify-between gap-4">
         <Link to="/home" className="flex items-center group shrink-0">
           <img
             src={logoMsgas}
             alt="MSGás"
-            className="h-16 w-auto transition-transform group-hover:scale-105 mt-[5px]"
+            className="h-16 w-auto transition-transform group-hover:scale-105"
           />
         </Link>
 
