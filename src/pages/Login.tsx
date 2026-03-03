@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logoLogin from "@/assets/Logo-principal.svg";
+import logoLoginDark from "@/assets/logo-tema-escuro.svg";
 import loginBg from "@/assets/login-bg.jpg";
 
 type AuthMode = "login" | "register" | "forgot-password" | "reset-sent";
@@ -196,7 +197,8 @@ const Login = () => {
       <div className="lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-background">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
           <div className="text-center mb-8">
-            <img src={logoLogin} alt="MSGás" className="h-24 w-auto mx-auto mb-6" />
+            <img src={logoLogin} alt="MSGás" className="h-24 w-auto mx-auto mb-6 dark:hidden" />
+            <img src={logoLoginDark} alt="MSGás" className="h-24 w-auto mx-auto mb-6 hidden dark:block" />
             <h1 className="font-display text-2xl font-bold">{titles[mode]}</h1>
             {descriptions[mode] && <p className="text-muted-foreground mt-2">{descriptions[mode]}</p>}
           </div>

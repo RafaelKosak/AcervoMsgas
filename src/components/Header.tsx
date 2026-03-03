@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, LogOut, Settings, MessageSquarePlus, UserRound, Menu, Camera } from "lucide-react";
+import { Search, LogOut, Settings, MessageSquarePlus, UserRound, Menu, Camera, Sun, Moon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -8,6 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +24,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef, useState } from "react";
 import logoMsgas from "@/assets/Logo-principal.svg";
+import logoMsgasDark from "@/assets/logo-tema-escuro.svg";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import {
   Dialog,
@@ -31,6 +36,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { AvatarCropper } from "@/components/AvatarCropper";
+import { ModeToggle } from "@/components/ModeToggle";
+import { useTheme } from "@/components/theme-provider";
 
 interface HeaderProps {
   searchValue?: string;
@@ -52,6 +59,7 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
   const [avatarCropSrc, setAvatarCropSrc] = useState<string | null>(null);
   const [avatarCropOpen, setAvatarCropOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (!user) return;
@@ -208,7 +216,12 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
           <img
             src={logoMsgas}
             alt="MSGás"
-            className="h-16 w-auto transition-transform group-hover:scale-105"
+            className="h-16 w-auto transition-transform group-hover:scale-105 dark:hidden"
+          />
+          <img
+            src={logoMsgasDark}
+            alt="MSGás"
+            className="h-16 w-auto transition-transform group-hover:scale-105 hidden dark:block"
           />
         </Link>
 
@@ -289,6 +302,26 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
                   </div>
                 </div>
                 <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    <Sun className="mr-2 h-4 w-4 dark:hidden" />
+                    <Moon className="mr-2 h-4 w-4 hidden dark:block" />
+                    <span>Tema</span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
+                        Claro {theme === 'light' && "✓"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
+                        Escuro {theme === 'dark' && "✓"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
+                        Sistema {theme === 'system' && "✓"}
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={() => setAvatarDialogOpen(true)}
@@ -399,6 +432,11 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
                       Painel Admin
                     </Button>
                   )}
+
+                  <div className="px-3 py-1 mt-2 flex items-center justify-between border-t border-border/50 pt-3">
+                    <span className="text-sm font-medium">Tema</span>
+                    <ModeToggle />
+                  </div>
                 </div>
 
                 {/* Logout */}

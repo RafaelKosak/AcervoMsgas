@@ -17,6 +17,7 @@ import UploadForm from "@/components/admin/UploadForm";
 import PublicationsTable from "@/components/admin/PublicationsTable";
 import { FeedbackView, CrachaView } from "@/components/admin/SubmissionsView";
 import logoMsgas from "@/assets/Logo-principal.svg";
+import logoMsgasDark from "@/assets/logo-tema-escuro.svg";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -62,7 +63,8 @@ const Admin = () => {
                 <span className="hidden sm:inline">Voltar ao site</span>
               </Link>
             </Button>
-            <img src={logoMsgas} alt="MSGás" className="h-10 sm:h-12 w-auto shrink-0 ml-2" />
+            <img src={logoMsgas} alt="MSGás" className="h-10 sm:h-12 w-auto shrink-0 ml-2 dark:hidden" />
+            <img src={logoMsgasDark} alt="MSGás" className="h-10 sm:h-12 w-auto shrink-0 ml-2 hidden dark:block" />
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[150px] sm:max-w-none">{user.email}</span>
