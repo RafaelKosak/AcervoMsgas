@@ -1,5 +1,4 @@
 import logoMsgas from "@/assets/Logo-principal.svg";
-import logoMsgasDark from "@/assets/logo-tema-escuro.svg";
 
 const Footer = () => {
   return (
@@ -10,12 +9,7 @@ const Footer = () => {
             <img
               src={logoMsgas}
               alt="MSGás"
-              className="h-16 w-auto dark:hidden"
-            />
-            <img
-              src={logoMsgasDark}
-              alt="MSGás"
-              className="h-16 w-auto hidden dark:block"
+              className="h-16 w-auto"
             />
           </div>
 

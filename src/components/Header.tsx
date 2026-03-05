@@ -24,7 +24,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useRef, useState } from "react";
 import logoMsgas from "@/assets/Logo-principal.svg";
-import logoMsgasDark from "@/assets/logo-tema-escuro.svg";
 import FeedbackDialog from "@/components/FeedbackDialog";
 import {
   Dialog,
@@ -216,12 +215,7 @@ const Header = ({ searchValue, onSearchChange, minimal = false }: HeaderProps) =
           <img
             src={logoMsgas}
             alt="MSGás"
-            className="h-16 w-auto transition-transform group-hover:scale-105 dark:hidden"
-          />
-          <img
-            src={logoMsgasDark}
-            alt="MSGás"
-            className="h-16 w-auto transition-transform group-hover:scale-105 hidden dark:block"
+            className="h-16 w-auto transition-transform group-hover:scale-105"
           />
         </Link>
 

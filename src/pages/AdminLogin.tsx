@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import logoLogin from "@/assets/Logo-principal.svg";
-import logoLoginDark from "@/assets/logo-tema-escuro.svg";
 
 type AuthMode = "login" | "forgot-password" | "reset-sent";
 
@@ -360,8 +359,7 @@ const AdminLogin = () => {
       >
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <img src={logoLogin} alt="MSGás" className="h-24 w-auto dark:hidden" />
-            <img src={logoLoginDark} alt="MSGás" className="h-24 w-auto hidden dark:block" />
+            <img src={logoLogin} alt="MSGás" className="h-24 w-auto" />
           </div>
           <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
             <BookOpen className="h-7 w-7" />
