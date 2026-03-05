@@ -241,7 +241,7 @@ const UploadForm = ({ onPublished }: UploadFormProps) => {
       updateStep(id, { status: "error", detail });
 
     try {
-      const slug = generateSlug(formData.title);
+      const slug = `${generateSlug(formData.title)}-${Date.now()}`;
       const year = new Date(formData.date).getFullYear();
 
       // 1 — Cover

@@ -7,7 +7,8 @@ async function fetchPublications(): Promise<PublicationRow[]> {
   const { data, error } = await supabase
     .from("publications")
     .select("*")
-    .order("published_at", { ascending: false });
+    .order("published_at", { ascending: false })
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return data || [];
