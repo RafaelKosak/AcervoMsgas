@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 
-const CLOUDINARY_CLOUD_NAME = "dh4s7mt6c";
+const CLOUDINARY_CLOUD_NAME = "dc9czztbk";
 const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
@@ -115,10 +115,10 @@ export function validateFile(file: File, allowVideo = false): string | null {
 
 export function useCloudinaryUpload(options: CloudinaryUploadOptions = {}) {
   const {
-    preset = "Gásflip",
+    preset = "AcervoMsgas",
     allowVideo = false,
     maxFiles = 5,
-    folderPrefix = "gasflip",
+    folderPrefix = "acervomsgas",
   } = options;
 
   const [files, setFiles] = useState<UploadFileState[]>([]);

@@ -320,7 +320,7 @@ const CrachaView = () => {
           </p>
         ) : (
           <div className="rounded-md border max-h-96 overflow-auto">
-             <Table>
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10"></TableHead>
@@ -331,10 +331,10 @@ const CrachaView = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {submissions.map((s) => (
+                {[...submissions].sort((a, b) => Number(a.reviewed) - Number(b.reviewed)).map((s) => (
                   <TableRow
                     key={s.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className={`cursor-pointer transition-colors ${s.reviewed ? "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/50" : "hover:bg-muted/50"}`}
                     onClick={() => setSelected(s)}
                   >
                     <TableCell className="text-center" onClick={(e) => e.stopPropagation()}>
@@ -403,13 +403,16 @@ function SubmissionDetailDialog({
     lines.push(`Data: ${new Date(selected.created_at).toLocaleString("pt-BR")}`);
     lines.push(`Status: ${selected.reviewed ? "Verificado" : "Pendente"}`);
     lines.push("");
-    Object.entries(selected.answers).forEach(([key, value]) => {
-      const label = key.replace(/_/g, " ").toUpperCase();
-      const val = typeof value === "string" ? value : JSON.stringify(value, null, 2);
-      lines.push(`${label}:`);
-      lines.push(val);
-      lines.push("");
-    });
+    const skipKeys = ["photos", "submission_id", "user_name", "user_email", "diretoria", "gerencia"];
+    Object.entries(selected.answers)
+      .filter(([key]) => !skipKeys.includes(key))
+      .forEach(([key, value]) => {
+        const label = key.replace(/_/g, " ").toUpperCase();
+        const val = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+        lines.push(`${label}:`);
+        lines.push(val);
+        lines.push("");
+      });
     if (selected.photo_urls?.length) {
       lines.push("FOTOS/ANEXOS:");
       selected.photo_urls.forEach((url, i) => lines.push(`  ${i + 1}. ${url}`));
@@ -497,32 +500,83 @@ function SubmissionDetailDialog({
                 )}
               </div>
 
-              {Object.entries(selected.answers).map(([key, value]) => (
-                <div key={key}>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase">
-                    {key.replace(/_/g, " ")}
-                  </p>
-                  <p className="text-sm whitespace-pre-wrap">
-                    {typeof value === "string"
-                      ? value
-                      : JSON.stringify(value, null, 2)}
-                  </p>
-                </div>
-              ))}
+              {Object.entries(selected.answers)
+                .filter(([key]) => !["photos", "submission_id", "user_name", "user_email", "diretoria", "gerencia"].includes(key))
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase">
+                      {key.replace(/_/g, " ")}
+                    </p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {typeof value === "string"
+                        ? value
+                        : JSON.stringify(value, null, 2)}
+                    </p>
+                  </div>
+                ))}
               {selected.photo_urls && selected.photo_urls.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">
-                    Fotos
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase">
+                      Fotos ({selected.photo_urls.length})
+                    </p>
+                    {selected.photo_urls.length > 1 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={async () => {
+                          for (let i = 0; i < selected.photo_urls.length; i++) {
+                            try {
+                              const res = await fetch(selected.photo_urls[i]);
+                              const blob = await res.blob();
+                              const ext = selected.photo_urls[i].split(".").pop()?.split("?")[0] || "jpg";
+                              const a = document.createElement("a");
+                              a.href = URL.createObjectURL(blob);
+                              a.download = `foto-${i + 1}.${ext}`;
+                              a.click();
+                              URL.revokeObjectURL(a.href);
+                            } catch { /* skip failed */ }
+                          }
+                        }}
+                      >
+                        <Download className="h-3 w-3 mr-1" />
+                        Baixar todas
+                      </Button>
+                    )}
+                  </div>
+                  <div className="flex gap-3 overflow-x-auto pb-1">
                     {selected.photo_urls.map((url, i) => (
-                      <img
-                        key={i}
-                        src={url}
-                        alt={`Foto ${i + 1}`}
-                        className="rounded-md w-full h-auto cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => setExpandedImg(url)}
-                      />
+                      <div key={i} className="relative group flex-shrink-0 h-24 w-24">
+                        <img
+                          src={url}
+                          alt={`Foto ${i + 1}`}
+                          className="rounded-md h-24 w-24 object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => setExpandedImg(url)}
+                        />
+                        <button
+                          type="button"
+                          title="Baixar foto"
+                          className="absolute bottom-1 right-1 h-7 w-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              const res = await fetch(url);
+                              const blob = await res.blob();
+                              const ext = url.split(".").pop()?.split("?")[0] || "jpg";
+                              const a = document.createElement("a");
+                              a.href = URL.createObjectURL(blob);
+                              a.download = `foto-${i + 1}.${ext}`;
+                              a.click();
+                              URL.revokeObjectURL(a.href);
+                            } catch {
+                              toast({ title: "Erro ao baixar", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>

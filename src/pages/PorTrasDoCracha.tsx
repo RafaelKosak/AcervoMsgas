@@ -44,7 +44,7 @@ const questions = [
   { name: "sonho" as const, label: "Um sonho que ainda quero realizar…" },
 ];
 
-const CLOUDINARY_CLOUD_NAME = "dh4s7mt6c";
+const CLOUDINARY_CLOUD_NAME = "dc9czztbk";
 
 function forceDownloadUrl(publicId: string, format: string) {
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/fl_attachment/${publicId}.${format}`;
@@ -53,6 +53,8 @@ function forceDownloadUrl(publicId: string, format: string) {
 const PorTrasDoCracha = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [submittedPhotos, setSubmittedPhotos] = useState<CloudinaryPhotoMeta[]>([]);
   const [profileData, setProfileData] = useState<{ name: string; diretoria: string; gerencia: string } | null>(null);
   const [userEmail, setUserEmail] = useState<string | undefined>();
@@ -66,12 +68,12 @@ const PorTrasDoCracha = () => {
     retryFile,
     hasErrors,
     isUploading,
-  } = useCloudinaryUpload({ preset: "Gásflip", folderPrefix: "gasflip" });
+  } = useCloudinaryUpload({ preset: "AcervoMsgas", folderPrefix: "acervomsgas" });
 
   useEffect(() => {
     const fetchProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setLoading(false); return; }
       setUserEmail(user.email);
       const { data } = await supabase
         .from("profiles")
@@ -79,6 +81,18 @@ const PorTrasDoCracha = () => {
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) setProfileData(data);
+
+      // Check if user already submitted
+      const { data: existing } = await supabase
+        .from("form_submissions")
+        .select("id")
+        .eq("form_type", "por_tras_do_cracha")
+        .eq("user_id", user.id)
+        .limit(1);
+      if (existing && existing.length > 0) {
+        setAlreadySubmitted(true);
+      }
+      setLoading(false);
     };
     fetchProfile();
   }, []);
@@ -142,8 +156,6 @@ const PorTrasDoCracha = () => {
           user_name: profileData?.name || user?.email?.split("@")[0] || "Anônimo",
           diretoria: profileData?.diretoria || "N/A",
           gerencia: profileData?.gerencia || "N/A",
-          submission_id: result.submissionId,
-          photos: result.photos,
         } as unknown as Record<string, never>,
         photo_urls: result.photos.map((p) => p.secure_url),
       };
@@ -159,6 +171,39 @@ const PorTrasDoCracha = () => {
       setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center p-6">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (alreadySubmitted) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center p-6">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center max-w-md">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Check className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="font-display text-2xl font-bold mb-2">Você já participou!</h2>
+            <p className="text-muted-foreground mb-6">
+              Suas respostas para o "Por Trás do Crachá" já foram registradas. Agradecemos por compartilhar um pouco sobre você! 😊
+            </p>
+            <Button onClick={() => window.history.back()}>Voltar</Button>
+          </motion.div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
