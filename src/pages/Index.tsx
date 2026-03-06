@@ -14,7 +14,7 @@ const Index = () => {
 
   const publications = useMemo(() => rows.map(rowToPublication), [rows]);
 
-  // Find the most recently UPLOADED publication (by created_at) for the featured spot
+  // Find the most recently PUBLISHED publication (by published_at) for the featured spot
   // When a type filter is active, show the newest publication of that type instead
   const featuredId = useMemo(() => {
     if (rows.length === 0) return null;
@@ -23,7 +23,7 @@ const Index = () => {
       : rows;
     if (candidates.length === 0) return null;
     const newest = candidates.reduce((a, b) =>
-      new Date(a.created_at) > new Date(b.created_at) ? a : b
+      new Date(a.published_at) > new Date(b.published_at) ? a : b
     );
     return newest.id;
   }, [rows, filters.type]);
